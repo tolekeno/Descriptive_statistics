@@ -1,0 +1,8 @@
+^legacy$
+^\.github$
+^.*\.Rproj$
+^\.Rproj\.user$
+^README\.Rmd$
+^\.git$
+^\.gitignore$
+^LICENSE\.md$

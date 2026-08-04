@@ -1,0 +1,46 @@
+Package: DescriptiveStats
+Title: Publication-Quality Descriptive Statistics Dashboard
+Version: 1.0.0
+Authors@R:
+    person("Tolera", "Keno", role = c("aut", "cre"),
+           email = "tolekeno@gmail.com")
+Description: A modular Shiny dashboard for exploratory data analysis and
+    publication-ready reporting of tabular data. Provides data upload
+    (CSV/TSV/Excel), data preparation, descriptive statistics, distribution
+    plots, group comparisons, correlation analysis, principal component
+    analysis, linear regression with diagnostics, and data quality checks.
+    All figures use journal-style colour palettes and can be exported at
+    publication resolution.
+License: MIT + file LICENSE
+Encoding: UTF-8
+URL: https://github.com/tolekeno/Descriptive_statistics
+BugReports: https://github.com/tolekeno/Descriptive_statistics/issues
+Depends:
+    R (>= 4.1)
+Imports:
+    broom,
+    corrplot,
+    DT,
+    factoextra,
+    FactoMineR,
+    GGally,
+    ggplot2,
+    ggthemes,
+    grDevices,
+    patchwork,
+    plotly,
+    scales,
+    shiny,
+    shinydashboard,
+    stats,
+    tidyr,
+    tidyselect,
+    tools,
+    utils,
+    viridisLite,
+    zip
+Suggests:
+    readxl,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Config/roxygen2/version: 8.0.0
