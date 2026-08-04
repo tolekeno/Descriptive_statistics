@@ -1,4 +1,4 @@
-# Publication Statistics Dashboard
+# Descriptive Statistics Dashboard
 
 An interactive R Shiny application for data preparation, descriptive statistics,
 publication-quality graphics, group comparisons, correlations, principal
