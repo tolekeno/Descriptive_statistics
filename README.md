@@ -25,6 +25,11 @@ Every figure uses one of eleven journal-style palettes (Nature, Science,
 Lancet, JAMA, NEJM, Economist, Tableau10, Okabe-Ito, and three viridis ramps)
 and exports to PNG, PDF, TIFF or SVG at a chosen DPI and page size.
 
+The dashboard accepts CSV, TSV, semicolon-delimited, pipe-delimited and Excel
+files. The maximum upload size is 100 MB per session; a hosting provider may
+apply a smaller platform-level limit. Uploaded datasets are processed only for
+the active session and are never written to this repository.
+
 ## Installation
 
 ```r
@@ -32,7 +37,8 @@ and exports to PNG, PDF, TIFF or SVG at a chosen DPI and page size.
 remotes::install_github("tolekeno/Descriptive_statistics")
 ```
 
-Excel support is optional; install `readxl` to enable it:
+Installing the package pulls in every dependency automatically. Excel support
+is optional; install `readxl` to enable it:
 
 ```r
 install.packages("readxl")
@@ -47,12 +53,29 @@ run_app()
 
 `run_app()` accepts `max_upload_mb` (default 100) and `launch.browser`.
 
-To deploy to shinyapps.io, Posit Connect or Shiny Server, point the deployment
-at the app directory shipped inside the package:
+## Deploying to shinyapps.io or Posit Connect
+
+GitHub stores and versions the source but does not run an R Shiny server. To
+make the app publicly accessible, deploy the app directory shipped inside the
+installed package:
 
 ```r
-system.file("app", package = "DescriptiveStats")
+install.packages("rsconnect")
+
+rsconnect::setAccountInfo(
+  name   = "YOUR_ACCOUNT_NAME",
+  token  = "YOUR_TOKEN",
+  secret = "YOUR_SECRET"
+)
+
+rsconnect::deployApp(
+  appDir   = system.file("app", package = "DescriptiveStats"),
+  appName  = "publication-statistics-dashboard",
+  appTitle = "Publication Statistics Dashboard"
+)
 ```
+
+Never commit an account token or secret to the repository.
 
 ## Using the analysis functions without the app
 
@@ -96,6 +119,10 @@ legacy/                               # the original single-file script, for ref
 The three layers are deliberately separate: the analysis functions know nothing
 about Shiny, the modules know nothing about each other, and the sidebar
 `settings` module hands every tab the same styling and export configuration.
+
+Before version 1.0.0 the app was a single 2,132-line script run with
+`shiny::runApp()`. That script is preserved unchanged under `legacy/`; see
+[NEWS.md](NEWS.md) for what changed.
 
 ## Development
 
