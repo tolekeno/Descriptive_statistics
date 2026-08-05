@@ -1,4 +1,3 @@
-^legacy$
 ^\.github$
 ^.*\.Rproj$
 ^\.Rproj\.user$

@@ -113,7 +113,6 @@ R/
   app-ui.R, app-server.R, run-app.R   # application assembly
 inst/app/app.R                        # deployment entry point
 tests/testthat/                       # unit tests for the analysis layer
-legacy/                               # the original single-file script, for reference
 ```
 
 The three layers are deliberately separate: the analysis functions know nothing
@@ -121,8 +120,9 @@ about Shiny, the modules know nothing about each other, and the sidebar
 `settings` module hands every tab the same styling and export configuration.
 
 Before version 1.0.0 the app was a single 2,132-line script run with
-`shiny::runApp()`. That script is preserved unchanged under `legacy/`; see
-[NEWS.md](NEWS.md) for what changed.
+`shiny::runApp()`; see [NEWS.md](NEWS.md) for what changed. That script is no
+longer in the working tree, but it remains in the git history and can be
+recovered with `git show 5cb3cbc:Publication_Statistics_Dashboard.R`.
 
 ## Development
 

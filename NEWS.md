@@ -1,8 +1,9 @@
 # DescriptiveStats 1.0.0
 
 First packaged release. The dashboard was previously a single
-2,132-line script (`Publication_Statistics_Dashboard.R`, kept in `legacy/`);
-it is now an installable R package.
+2,132-line script (`Publication_Statistics_Dashboard.R`); it is now an
+installable R package. The original script remains in the git history and can
+be recovered with `git show 5cb3cbc:Publication_Statistics_Dashboard.R`.
 
 ## Structure
 
