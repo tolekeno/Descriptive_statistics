@@ -24,17 +24,17 @@ The package is organised in three layers:
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/OWNER/Descriptive_statistics}
-  \item Report bugs at \url{https://github.com/OWNER/Descriptive_statistics/issues}
+  \item \url{https://github.com/tolekeno/Descriptive_statistics}
+  \item Report bugs at \url{https://github.com/tolekeno/Descriptive_statistics/issues}
 }
 
 }
 \author{
-\strong{Maintainer}: Tolekeno \email{tolekeno@gmail.com}
+\strong{Maintainer}: Tolera Keno \email{tolekeno@gmail.com}
 
 Authors:
 \itemize{
-  \item Tolekeno \email{tolekeno@gmail.com}
+  \item Tolera Keno \email{tolekeno@gmail.com}
 }
 
 }

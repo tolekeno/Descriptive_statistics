@@ -75,10 +75,42 @@ build_plot_theme <- function(theme_name = "minimal",
 
 #' Export formats offered in the sidebar
 #'
+#' SVG is listed only when this installation can actually write one, so the
+#' user cannot pick a format that will fail at download time.
+#'
 #' @return Named character vector for `selectInput(choices = )`.
 #' @export
 export_format_choices <- function() {
-  c("PNG" = "png", "PDF" = "pdf", "TIFF" = "tiff", "SVG" = "svg")
+  fmts <- c("PNG" = "png", "PDF" = "pdf", "TIFF" = "tiff")
+  if (svg_supported()) fmts <- c(fmts, "SVG" = "svg")
+  fmts
+}
+
+#' Can this installation write SVG files?
+#'
+#' The base `grDevices::svg()` device needs cairo, which headless macOS and
+#' minimal Linux builds of R frequently lack. The \pkg{svglite} package writes
+#' SVG without cairo, so either one is enough.
+#'
+#' @return `TRUE` when an SVG device is available.
+#' @export
+svg_supported <- function() {
+  has_pkg("svglite") || isTRUE(unname(capabilities("cairo")))
+}
+
+#' The SVG device function to use, if any
+#'
+#' Prefers \pkg{svglite}, which produces smaller and more portable files than
+#' the cairo device.
+#'
+#' @return A device function.
+#' @noRd
+svg_device <- function() {
+  if (has_pkg("svglite")) return(svglite::svglite)
+  if (isTRUE(unname(capabilities("cairo")))) return(grDevices::svg)
+  stop("SVG export is unavailable: this R installation was built without ",
+       "cairo support. Install the 'svglite' package to enable it, or choose ",
+       "PNG, PDF or TIFF instead.", call. = FALSE)
 }
 
 #' Default export settings
@@ -103,7 +135,7 @@ save_plot <- function(plot, file, export = default_export()) {
                    "png"  = "png",
                    "pdf"  = "pdf",
                    "tiff" = "tiff",
-                   "svg"  = grDevices::svg,
+                   "svg"  = svg_device(),
                    "png")
   args <- list(
     filename = file,
@@ -142,7 +174,7 @@ open_export_device <- function(file, export = default_export()) {
     "pdf"  = grDevices::pdf(file, width = w, height = h, bg = "white"),
     "tiff" = grDevices::tiff(file, width = w, height = h, units = "in",
                              res = dpi, bg = "white", compression = "lzw"),
-    "svg"  = grDevices::svg(file, width = w, height = h, bg = "white"),
+    "svg"  = svg_device()(file, width = w, height = h, bg = "white"),
     grDevices::png(file, width = w, height = h, units = "in",
                    res = dpi, bg = "white")
   )

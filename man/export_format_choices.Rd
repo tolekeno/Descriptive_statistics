@@ -10,5 +10,6 @@ export_format_choices()
 Named character vector for `selectInput(choices = )`.
 }
 \description{
-Export formats offered in the sidebar
+SVG is listed only when this installation can actually write one, so the
+user cannot pick a format that will fail at download time.
 }

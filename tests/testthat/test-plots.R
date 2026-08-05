@@ -111,14 +111,36 @@ test_that("pairwise_scatter_plot builds with and without colouring", {
   )
 })
 
-test_that("save_plot writes a file in each supported format", {
+test_that("save_plot writes a file in each offered format", {
   p <- ggplot2::ggplot(mtcars, ggplot2::aes(wt, mpg)) + ggplot2::geom_point()
 
+  # export_format_choices() only offers SVG where a device exists, so every
+  # format it returns must actually write a file.
   for (fmt in unname(export_format_choices())) {
     file <- tempfile(fileext = paste0(".", fmt))
     save_plot(p, file, list(format = fmt, width = 5, height = 4, dpi = 150))
     expect_true(file.exists(file), info = fmt)
     expect_gt(file.size(file), 0)
+  }
+})
+
+test_that("SVG is offered exactly when a device is available", {
+  # Headless macOS and minimal Linux builds have neither cairo nor svglite.
+  expect_equal("svg" %in% export_format_choices(), svg_supported())
+  expect_true(all(c("png", "pdf", "tiff") %in% export_format_choices()))
+})
+
+test_that("SVG export works when supported and errors clearly when not", {
+  p <- ggplot2::ggplot(mtcars, ggplot2::aes(wt, mpg)) + ggplot2::geom_point()
+  file <- tempfile(fileext = ".svg")
+  export <- list(format = "svg", width = 5, height = 4, dpi = 150)
+
+  if (svg_supported()) {
+    save_plot(p, file, export)
+    expect_true(file.exists(file))
+    expect_gt(file.size(file), 0)
+  } else {
+    expect_error(save_plot(p, file, export), "SVG export is unavailable")
   }
 })
 

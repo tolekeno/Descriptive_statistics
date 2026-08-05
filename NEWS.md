@@ -26,6 +26,10 @@ be recovered with `git show 5cb3cbc:Publication_Statistics_Dashboard.R`.
   removed in ggplot2 4.0, which was being ignored with a warning.
 * Group colours are computed from dropped factor levels, so a grouping column
   carrying unused levels no longer shifts the palette.
+* SVG export no longer fails on R installations built without cairo, which
+  includes headless macOS and minimal Linux builds. `svglite` is used when
+  available, SVG is dropped from the export menu when no device exists, and
+  the error message now says what to install.
 
 ## Changes
 
