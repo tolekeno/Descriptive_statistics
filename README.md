@@ -1,5 +1,9 @@
 # DescriptiveStats
 
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/tolekeno/Descriptive_statistics/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/tolekeno/Descriptive_statistics/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
+
 A publication-quality descriptive statistics dashboard for tabular data, built
 with Shiny and packaged as an installable R package.
 
