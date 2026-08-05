@@ -62,8 +62,6 @@ https://tolera-keno-2026.shinyapps.io/publication-statistics-dashboard/
 
 
 
-Never commit an account token or secret to the repository.
-
 ## Using the analysis functions without the app
 
 The statistical layer is plain R with no Shiny dependency, so it can be used
