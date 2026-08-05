@@ -57,27 +57,10 @@ run_app()
 
 `run_app()` accepts `max_upload_mb` (default 100) and `launch.browser`.
 
-## Deploying to shinyapps.io or Posit Connect
+##Running in browser
+https://tolera-keno-2026.shinyapps.io/publication-statistics-dashboard/
 
-GitHub stores and versions the source but does not run an R Shiny server. To
-make the app publicly accessible, deploy the app directory shipped inside the
-installed package:
 
-```r
-install.packages("rsconnect")
-
-rsconnect::setAccountInfo(
-  name   = "YOUR_ACCOUNT_NAME",
-  token  = "YOUR_TOKEN",
-  secret = "YOUR_SECRET"
-)
-
-rsconnect::deployApp(
-  appDir   = system.file("app", package = "DescriptiveStats"),
-  appName  = "publication-statistics-dashboard",
-  appTitle = "Publication Statistics Dashboard"
-)
-```
 
 Never commit an account token or secret to the repository.
 
