@@ -207,6 +207,9 @@ mod_prep_server <- function(id, raw_data) {
       if (!result$ok) return()
 
       new_name <- paste0(input$transformType, "_", input$transformVar)
+      if (new_name %in% names(raw_data())) {
+        new_name <- utils::tail(make.unique(c(names(raw_data()), new_name), sep = "_"), 1L)
+      }
       prep_state$added_cols[[new_name]] <- result$values
       if (!(new_name %in% prep_state$keep_cols)) {
         prep_state$keep_cols <- c(prep_state$keep_cols, new_name)

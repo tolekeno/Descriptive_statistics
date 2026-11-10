@@ -157,3 +157,10 @@ test_that("open_export_device opens a writable device", {
   expect_true(file.exists(file))
   expect_gt(file.size(file), 0)
 })
+test_that("faceting works when the grouping column is named Value", {
+  d <- data.frame(x = c(1, 2, Inf), y = c(3, 4, 5),
+                  Value = c("A", "B", "C"))
+  p <- build_faceted_plot(d, c("x", "y"), facet_by = "Value")
+  expect_identical(as.character(p$data$FacetVar), c("A", "A", "B", "B", "C"))
+  expect_true(all(is.finite(p$data$Value)))
+})

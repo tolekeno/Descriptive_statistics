@@ -41,7 +41,8 @@ dist_options <- function(...) {
 #' build_dist_plot(mtcars, "mpg", dist_options(plot_type = "density"))
 build_dist_plot <- function(df, var, opts = dist_options()) {
   vals <- df[[var]]
-  vals_clean <- vals[!is.na(vals)]
+  finite <- is.finite(vals)
+  vals_clean <- vals[finite]
 
   if (!length(vals_clean)) {
     return(message_plot(paste(var, "has no non-missing values.")))
@@ -63,8 +64,8 @@ build_dist_plot <- function(df, var, opts = dist_options()) {
 
   gvar <- opts$group_var
   use_group <- !is.null(gvar) && !identical(gvar, "None") && gvar %in% names(df) &&
-    any(!is.na(df[[gvar]][!is.na(vals)]))
-  grp <- if (use_group) droplevels(as.factor(df[[gvar]][!is.na(vals)])) else NULL
+    any(!is.na(df[[gvar]][finite]))
+  grp <- if (use_group) droplevels(as.factor(df[[gvar]][finite])) else NULL
   group_colors <- if (use_group) expand_palette(colors, nlevels(grp)) else colors
 
   outlier_shape <- if (isTRUE(opts$show_outliers)) 19 else NA
@@ -207,13 +208,17 @@ build_faceted_plot <- function(df, variables, facet_by = NULL,
   use_facet_var <- !is.null(facet_by) && !identical(facet_by, "None") &&
     facet_by %in% names(df)
 
-  keep_cols <- unique(c(variables, if (use_facet_var) facet_by))
   df_long <- tidyr::pivot_longer(
-    df[, keep_cols, drop = FALSE],
+    df[, variables, drop = FALSE],
     cols = tidyselect::all_of(variables),
     names_to = "Variable", values_to = "Value"
   )
-  if (use_facet_var) df_long$FacetVar <- as.factor(df_long[[facet_by]])
+  if (use_facet_var) {
+    # pivot_longer() keeps each input row's values together by default.
+    df_long$FacetVar <- as.factor(rep(df[[facet_by]], each = length(variables)))
+  }
+  df_long <- df_long[is.finite(df_long$Value), , drop = FALSE]
+  if (!nrow(df_long)) return(message_plot("No finite observations to plot."))
 
   colors <- expand_palette(opts$colors, length(variables))
 

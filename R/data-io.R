@@ -1,7 +1,7 @@
 #' Guess the field delimiter of a delimited text file
 #'
-#' Counts candidate delimiters across the first non-empty records and picks the
-#' most frequent one. This detects semicolon- and pipe-separated exports, which
+#' Compares candidate delimiters outside quoted fields and favours consistent
+#' field counts across records. This detects semicolon- and pipe-separated exports, which
 #' many locales produce from Excel.
 #'
 #' @param path Path to a text file.
@@ -13,11 +13,13 @@ detect_delimiter <- function(path) {
   if (!length(lines)) return(",")
   candidates <- c(",", "\t", ";", "|")
   counts <- vapply(candidates, function(z) {
-    mean(vapply(
-      lines,
-      function(x) lengths(regmatches(x, gregexpr(z, x, fixed = TRUE))),
-      numeric(1)
-    ))
+    con <- textConnection(lines)
+    on.exit(close(con))
+    fields <- utils::count.fields(con, sep = z, quote = "\"",
+                                  comment.char = "")
+    fields <- fields[is.finite(fields)]
+    if (!length(fields) || fields[1L] <= 1L) return(0)
+    mean(fields == fields[1L]) * (fields[1L] - 1L)
   }, numeric(1))
   if (max(counts) == 0) "," else candidates[which.max(counts)]
 }
@@ -52,7 +54,8 @@ read_tabular <- function(path, file_name = path, delim = "auto", sheet = 1) {
     if (!has_pkg("readxl")) {
       stop("Install the 'readxl' package to open Excel files.", call. = FALSE)
     }
-    as.data.frame(readxl::read_excel(path, sheet = sheet %||% 1))
+    read_excel <- if (ext == "xlsx") readxl::read_xlsx else readxl::read_xls
+    as.data.frame(read_excel(path, sheet = sheet %||% 1, .name_repair = "minimal"))
   } else {
     sep <- if (identical(delim, "auto")) detect_delimiter(path) else delim
     utils::read.table(
@@ -67,7 +70,9 @@ read_tabular <- function(path, file_name = path, delim = "auto", sheet = 1) {
   if (nrow(df) == 0 || ncol(df) == 0) {
     stop("The file contains no usable data.", call. = FALSE)
   }
-  names(df) <- make.unique(trimws(names(df)), sep = "_")
+  headers <- trimws(names(df))
+  headers[!nzchar(headers)] <- "Column"
+  names(df) <- make.unique(headers, sep = "_")
   df
 }
 
@@ -87,7 +92,7 @@ read_tabular <- function(path, file_name = path, delim = "auto", sheet = 1) {
 col_classes <- function(df, cat_unique_max = 20) {
   types <- vapply(df, function(x) {
     if (is.numeric(x)) {
-      z <- unique(x[!is.na(x)])
+      z <- unique(x[is.finite(x)])
       is_whole <- length(z) > 0 &&
         all(abs(z - round(z)) < sqrt(.Machine$double.eps))
       low_cardinality <- length(z) >= 2 && length(z) <= cat_unique_max &&

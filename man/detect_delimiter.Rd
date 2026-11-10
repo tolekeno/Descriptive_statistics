@@ -13,7 +13,7 @@ detect_delimiter(path)
 A single-character delimiter; `","` when nothing can be determined.
 }
 \description{
-Counts candidate delimiters across the first non-empty records and picks the
-most frequent one. This detects semicolon- and pipe-separated exports, which
+Compares candidate delimiters outside quoted fields and favours consistent
+field counts across records. This detects semicolon- and pipe-separated exports, which
 many locales produce from Excel.
 }

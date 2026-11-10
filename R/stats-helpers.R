@@ -81,7 +81,7 @@ cor_pmat <- function(mat, method = "pearson") {
 
   for (i in seq_len(n - 1)) {
     for (j in (i + 1):n) {
-      ok <- stats::complete.cases(mat[, c(i, j), drop = FALSE])
+      ok <- is.finite(mat[, i]) & is.finite(mat[, j])
       if (sum(ok) < 3) next
       ct <- tryCatch(
         suppressWarnings(stats::cor.test(mat[ok, i], mat[ok, j], method = method)),

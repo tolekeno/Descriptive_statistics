@@ -56,3 +56,9 @@ test_that("pca_eigen_table is labelled for display", {
   expect_equal(tb$Component[1], "Dim.1")
   expect_equal(tb[["Cumulative (%)"]][nrow(tb)], 100)
 })
+test_that("PCA excludes non-finite rows and preserves source row indices", {
+  d <- data.frame(x = c(1, Inf, 3, 2), y = c(2, 3, 1, 5))
+  result <- fit_pca(d, names(d))
+  expect_null(result$error)
+  expect_identical(result$used_rows, c(1L, 3L, 4L))
+})

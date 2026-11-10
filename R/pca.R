@@ -15,16 +15,16 @@
 #' @examples
 #' fit_pca(mtcars, c("mpg", "wt", "hp", "disp"))$pca$eig
 fit_pca <- function(df, variables, scale_unit = TRUE, max_ncp = 10) {
-  variables <- intersect(variables, names(df))
+  variables <- intersect(variables, names(numeric_columns(df)))
   if (length(variables) < 2) {
     return(list(error = "Select at least two numeric variables for PCA."))
   }
 
   mat_all <- df[, variables, drop = FALSE]
-  used_rows <- which(stats::complete.cases(mat_all))
+  used_rows <- which(Reduce(`&`, lapply(mat_all, is.finite)))
   mat <- mat_all[used_rows, , drop = FALSE]
   if (nrow(mat) < 3) {
-    return(list(error = "PCA requires at least three complete observations."))
+    return(list(error = "PCA requires at least three complete, finite observations."))
   }
 
   keep <- vapply(mat, function(x) {

@@ -27,7 +27,7 @@ corr_order_choices <- function() {
 #' @export
 drop_unusable_for_cor <- function(df) {
   keep <- vapply(df, function(x) {
-    z <- x[!is.na(x)]
+    z <- x[is.finite(x)]
     length(z) >= 3 && is.finite(stats::var(z)) && stats::var(z) > 0
   }, logical(1))
   df[, keep, drop = FALSE]
@@ -62,6 +62,7 @@ corr_objects <- function(df, method = "pearson", holm = TRUE) {
 draw_corrplot <- function(obj, method = "pearson", order = "hclust",
                           colors = get_palette("Nature"), font_size = 13,
                           show_sig = TRUE) {
+  if (order %in% c("hclust", "AOE") && anyNA(obj$mat)) order <- "original"
   corrplot::corrplot(
     obj$mat,
     method      = "color",

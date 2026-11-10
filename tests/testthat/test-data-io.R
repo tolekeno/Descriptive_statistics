@@ -73,3 +73,21 @@ test_that("col_classes keeps continuous columns numeric even when few distinct",
   df <- data.frame(x = rep(c(1.5, 2.5), 30))
   expect_equal(col_classes(df)$numeric, "x")
 })
+test_that("auto delimiter detection handles quoted text and decimal commas", {
+  path <- tempfile(fileext = ".csv")
+  on.exit(unlink(path))
+  writeLines(c('label;value', '"a,b,c,d";1,2', '"e,f,g,h";3,4'), path)
+  expect_identical(detect_delimiter(path), ";")
+  expect_identical(read_tabular(path)$label, c("a,b,c,d", "e,f,g,h"))
+})
+
+test_that("extensionless Shiny uploads can read the selected Excel sheet", {
+  skip_if_not_installed("readxl")
+  path <- tempfile()
+  on.exit(unlink(path))
+  example <- readxl::readxl_example("datasets.xlsx")
+  file.copy(example, path)
+  sheet <- readxl::excel_sheets(example)[2L]
+  expected <- as.data.frame(readxl::read_xlsx(example, sheet = sheet))
+  expect_identical(read_tabular(path, "datasets.xlsx", sheet = sheet), expected)
+})

@@ -74,7 +74,7 @@ mod_groups_server <- function(id, working_data, numeric_data, cat_vars, settings
       req(input$gcY, input$gcGroup, working_data())
       df <- working_data()
       d <- data.frame(y = df[[input$gcY]], g = as.factor(df[[input$gcGroup]]))
-      d <- d[!is.na(d$y) & !is.na(d$g), , drop = FALSE]
+      d <- d[is.finite(d$y) & !is.na(d$g), , drop = FALSE]
       d$g <- droplevels(d$g)
       validate(need(nrow(d) > 0, "No complete observations for this combination."))
       d
