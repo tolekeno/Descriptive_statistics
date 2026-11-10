@@ -15,12 +15,18 @@ mod_upload_ui <- function(id) {
   ns <- NS(id)
   tabItem(
     tabName = "upload",
+    tags$section(
+      class = "ds-intro",
+      h1("Explore your data"),
+      p("Upload a dataset from the sidebar to preview it here.",
+        "Use Data Prep to filter rows or transform variables before analysis.")
+    ),
     fluidRow(
-      box(title = "Data Upload", width = 12, status = "info", solidHeader = TRUE,
+      box(title = "Supported file formats", width = 12, status = "info", solidHeader = TRUE,
           uiOutput(ns("formatHelp")))
     ),
     fluidRow(
-      box(title = "Data Preview", width = 12, status = "primary",
+      box(title = "Data preview", width = 12, status = "primary",
           solidHeader = TRUE, DT::DTOutput(ns("dataPreviewTable")))
     )
   )
@@ -42,9 +48,7 @@ mod_upload_server <- function(id, raw_data) {
                  "<code>readxl</code> package to enable Excel support.</i></p>")
         } else {
           ""
-        },
-        "<p style='font-size:13px;color:#555;'>Use the Data Prep tab to filter, ",
-        "transform and export a cleaned dataset.</p>"
+        }
       ))
     })
 

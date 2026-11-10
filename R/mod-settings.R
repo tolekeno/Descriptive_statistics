@@ -20,8 +20,7 @@ NULL
 mod_settings_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    h4("Plot Styling",
-       style = "padding-left:15px;font-weight:bold;color:#3c8dbc;"),
+    h4("Plot styling", class = "ds-sidebar-heading"),
     uiOutput(ns("varSelectSidebar")),
     selectInput(ns("colorPalette"), "Color Palette:",
                 choices = names(publication_palettes()), selected = "Nature"),
@@ -34,9 +33,8 @@ mod_settings_ui <- function(id) {
     checkboxInput(ns("useGridLines"), "Show Grid Lines", TRUE),
     checkboxInput(ns("useBoldText"), "Bold Titles", TRUE),
     hr(),
-    h5("Export Dimensions",
-       style = "padding-left:15px;color:#3c8dbc;font-weight:bold;"),
-    fluidRow(
+    h5("Export dimensions", class = "ds-sidebar-heading"),
+    div(class = "row ds-export-dimensions",
       column(6, numericInput(ns("exportWidth"), "W (in)",
                              value = 9, min = 3, max = 20, step = 0.5)),
       column(6, numericInput(ns("exportHeight"), "H (in)",
